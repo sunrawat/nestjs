@@ -1,0 +1,13 @@
+# POST http://localhost:3000/scenarios
+# Content-Type: application/x-www-form-urlencoded
+
+# scenario=test1&connector=test1&connection=test1&tags=[test1, test2]&trigger=test1&status=test2
+  GET http://localhost:3000/scenarios
+
+
+#GET http://localhost:3000/scenarios/1
+
+PUT  http://localhost:3000/scenarios
+Content-Type: application/x-www-form-urlencoded
+
+id=1&connection=test22222&tags=[test1, test2]&trigger=test1&status=test2
