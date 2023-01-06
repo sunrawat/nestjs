@@ -1,10 +1,12 @@
-import { Injectable, HttpException, ForbiddenException } from "@nestjs/common";
-import { NotFoundError } from "rxjs";
+import { Injectable, HttpException, ForbiddenException, NotFoundException } from "@nestjs/common";
+import mongoose, { Model,  } from "mongoose";
 import { Scenario } from "./scenario";
+import { InjectModel } from '@nestjs/mongoose';
+import { ScenarioSchema } from './scenario';
 @Injectable()
 export class ScenarioService {
     private scenarios: Scenario[] = [];
-    constructor() {
+    constructor(@InjectModel('scenario') private scenario: Model<typeof ScenarioSchema>) {
         let data= [];
         for(var i=1;i<5;i++) {
            data.push({
@@ -19,30 +21,36 @@ export class ScenarioService {
         }
         this.scenarios = data;
     }
-    Addscenario( scenario: string, connector: string, connection: string, tags: string[], trigger: string, status: string) {
-        const id = Math.random().toString();
-        const newscenario = new Scenario(
-            id,
+    async Addscenario( scenario: string, connector: string, connection: string, tags: string[], trigger: string, status: string):
+    Promise<any> {
+        const newscenario = {
             scenario,
             connector,
             connection,
             tags,
             trigger,
             status
-        );
-        console.log(newscenario);
-        this.scenarios.push(newscenario);
-        return id;
+        };
+        console.log(newscenario)
+    const data = await this.scenario.create(newscenario);
+    return data.save();
     }
-    getScenarios() {
-        return [...this.scenarios];
+    async getScenarios() {
+        return await this.scenario.find();
     }
-    getscenariosById(id: string) {
-        const prod = this.scenarios.find(r=>r.id == id);
-        if(!prod) {
-            throw new NotFoundError('record not found');
+    async getscenariosById(id: string) {
+
+        const userId = mongoose.Types.ObjectId.isValid(id);
+        if(!!userId) {
+            const scenario = await this.scenario.findById(id);
+            if(!scenario) {
+                throw new NotFoundException('record not found');
+            }
+            return scenario;
+    
+        }else {
+            throw new NotFoundException('error');
         }
-        return prod;
     }
 
     updateScenario(id: string, scenario: string, connector: string, connection: string, tags: string[], trigger: string, status: string) {

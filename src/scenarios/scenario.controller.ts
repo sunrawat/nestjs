@@ -5,25 +5,24 @@ import { ScenarioService } from "./scenario.service";
 export class ScenarioContoller {
     constructor( private readonly scenarioService: ScenarioService){}
     @Get()
-    getScenarios() {
-        const prods =  this.scenarioService.getScenarios();
-        return prods;
+    async getScenarios() {
+        const scenarios =  await this.scenarioService.getScenarios();
+        return scenarios;
     }
     @Post()
-    addScenario(
+    async addScenario(
         @Body('scenario') scenario: string, @Body('connector') connector: string, @Body('connection') connection: string, @Body('tags') tags: string[], @Body('trigger') trigger: string, @Body('status') status: string,
     ) {
-        console.log(scenario);
-        const generatedId = this.scenarioService.Addscenario( scenario, connector, connection, tags, trigger, status,
+        const data = await this.scenarioService.Addscenario( scenario, connector, connection, tags, trigger, status,
         );
-        return { id: generatedId};
+        return data;
     }
 
     
     @Get(":id")
-    getScenarioById(@Param("id") id: string) {
-        const prod =  this.scenarioService.getscenariosById(id);
-        return prod;
+    async getScenarioById(@Param("id") id: string) {
+        const scenario =  await this.scenarioService.getscenariosById(id);
+        return scenario;
     }
 
 
