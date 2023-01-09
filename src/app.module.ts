@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { ScenarioModule } from './scenarios/scenario.module';
 
 @Module({
-  imports: [ScenarioModule, MongooseModule.forRoot("mongodb+srv://admin:<admin>@cluster0.sztgalv.mongodb.net/?retryWrites=true&w=majority")],
+  imports: [ScenarioModule],
   controllers: [AppController]
 })
 export class AppModule {}
